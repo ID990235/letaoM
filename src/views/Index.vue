@@ -1,9 +1,9 @@
 <template>
   <div>
 
-    <van-tabbar v-model="active" active-color="#ee0a24">
+    <van-tabbar v-model="active" active-color="#ee0a24" z-index="1000">
       <van-tabbar-item icon="home-o" to="/home/index">首页</van-tabbar-item>
-      <van-tabbar-item icon="cart-o" to="/home/shopcar">购物车</van-tabbar-item>
+      <van-tabbar-item icon="cart-o" to="/home/shopcar" badge="9">购物车</van-tabbar-item>
       <van-tabbar-item icon="manager-o" to="/home/user">我的</van-tabbar-item>
     </van-tabbar>
 

@@ -34,6 +34,7 @@ export default {
   min-width: 320px;
   max-width: 750px;
   margin: 0 auto;
+  padding-bottom: 50px;
 }
 </style>
 
