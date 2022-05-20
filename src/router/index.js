@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import NProgress from 'nprogress'
 
 // import Index from '../views/Index.vue'
 // import Home from '../views/Home.vue'
@@ -32,7 +33,9 @@ const router = new VueRouter({
           component: () => import('../views/Shopcar.vue'),
           meta: {
             name: 'shopcar',
-            isShowNavbar: true
+            title: '购物车',
+            isShowNavbar: false,
+            backRouter: '/home'
           }
         },
         {
@@ -40,20 +43,43 @@ const router = new VueRouter({
           component: () => import('../views/User.vue'),
           meta: {
             name: 'user',
+            title: '我的',
             isShowNavbar: true
           }
         },
       ]
     },
     {
-      path: '/goods',
-      component: () => import('../views/Goods.vue'),
+      path: '/goodslist',
+      component: () => import('../views/GoodsList.vue'),
       meta: {
-        title: '商品页',
-        isShowNavbar: false
+        name: 'goodslist',
+        title: '海淘超市',
+      }
+    },
+    {
+      path: '/goodsdetail/:id',
+      component: () => import('../views/GoodsDetail.vue'),
+      meta: {
+        name: 'goodsdetail',
+        title: '商品详情',
+        isShowNavbar: false,
       }
     },
   ]
+})
+
+NProgress.configure({
+  showSpinner: false,
+})
+
+router.beforeEach((to, from, next) => {
+  NProgress.start();
+  next();
+})
+
+router.afterEach((to, from) => {
+  NProgress.done();
 })
 
 export default router

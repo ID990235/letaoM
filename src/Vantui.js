@@ -4,6 +4,7 @@ import 'vant/lib/index.css';
 import {
   Tabbar, TabbarItem, NavBar, Badge, SubmitBar, Empty, Button,
   Search, Sticky, Swipe, SwipeItem, Grid, GridItem, Divider, Lazyload,
+  Toast, List, PullRefresh,
 } from 'vant';
 Vue.use(Tabbar)
 Vue.use(TabbarItem)
@@ -19,6 +20,9 @@ Vue.use(SwipeItem)
 Vue.use(Grid)
 Vue.use(GridItem)
 Vue.use(Divider)
+Vue.use(Toast)
+Vue.use(List)
+Vue.use(PullRefresh)
 Vue.use(Lazyload, {
   lazyComponent: true,
 });

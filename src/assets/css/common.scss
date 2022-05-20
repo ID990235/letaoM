@@ -1,3 +1,15 @@
+html,
+body {
+  scroll-behavior: smooth;
+  background-color: #f6f6f6;
+}
+
+body {
+  min-width: 320px;
+  max-width: 750px;
+  margin: 0 auto;
+}
+
 em,
 i {
   font-style: normal;
@@ -13,4 +25,71 @@ i {
   /*设置或检索伸缩盒对象的子元素的排列方式*/
   -webkit-box-orient: vertical;
   word-break: break-all;
+}
+
+// 商品列表
+.goodslist {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 10px 10px 0;
+}
+
+.goodsWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 48%;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+
+  .goods_img {
+    width: 100%;
+    height: 189.3px;
+    margin-bottom: 8px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 20%;
+    }
+  }
+
+  .goods_info {
+    padding: 0 10px 10px;
+  }
+
+  .content {
+    font-size: 18px;
+    text-align: left;
+    height: 45px;
+    line-height: 23px;
+  }
+
+  .goods_footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    height: 40px;
+  }
+
+  .price {
+    font-family: JDZH-Regular, sans-serif;
+    font-size: 15px;
+    color: #ff4142;
+  }
+
+  .price_int {
+    font-size: 20px;
+  }
+
+  .buy {
+    font-size: 13px;
+    color: #999999;
+  }
 }

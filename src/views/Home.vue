@@ -25,7 +25,7 @@
 
     <!-- 九宫格 -->
     <van-grid column-num="5" icon-size="38px" :border="false">
-      <van-grid-item v-for="item in gridDta" :key="item.id" :icon="item.src" :text="item.title" />
+      <van-grid-item v-for="item in gridDta" :key="item.id" :icon="item.src" :text="item.title" :to="item.to" />
     </van-grid>
 
     <!-- 商品列表 -->
@@ -33,16 +33,7 @@
       推荐商品
     </van-divider>
     <div class="goodslist">
-      <Goods v-for="item in goodsData" :key="item.id">
-        <template #img>
-          <img v-lazy="item.img_url">
-        </template>
-        <template #content>
-          {{ item.title }}
-        </template>
-        <template #price>{{ item.sell_price }}</template>
-        <template #buy>{{ item.buy }}</template>
-      </Goods>
+      <Goods v-for="item in goodsData" :key="item.id" :data="item" @goodsclick="goodsRouter"></Goods>
     </div>
 
     <!-- backTop -->
@@ -52,7 +43,7 @@
 
 <script>
 // 导入数据接口
-import { fetchLunbo, fetchGoods } from '../api/home'
+import { fetchLunbo, fetchGoods } from '../api/index'
 // 导入图片
 import img1 from '../assets/images/1.png'
 import img2 from '../assets/images/2.png'
@@ -64,7 +55,7 @@ import img7 from '../assets/images/7.png'
 import img8 from '../assets/images/8.png'
 import img9 from '../assets/images/9.png'
 import img10 from '../assets/images/more.png'
-// 导入商品列表组件
+// 导入商品组件
 import Goods from '../components/goods.vue'
 // 导入backTop组件
 import backtop from '../components/backTop.vue'
@@ -73,20 +64,22 @@ export default {
     return {
       lunBoData: [],
       gridDta: [
-        { id: 1, src: img1, title: '海淘超市' },
-        { id: 2, src: img2, title: '数码电器' },
-        { id: 3, src: img3, title: '海淘生鲜' },
-        { id: 4, src: img4, title: '充值缴费' },
-        { id: 5, src: img5, title: 'PLUS会员' },
-        { id: 6, src: img6, title: '领金贴' },
-        { id: 7, src: img7, title: '领券' },
-        { id: 8, src: img8, title: '京东服饰' },
-        { id: 9, src: img9, title: '物流查询' },
-        { id: 10, src: img10, title: '更多' },
+        { id: 1, src: img1, title: '海淘超市', to: '/goodslist' },
+        { id: 2, src: img2, title: '数码电器', to: '/goodslist' },
+        { id: 3, src: img3, title: '海淘生鲜', to: '/goodslist' },
+        { id: 4, src: img4, title: '充值缴费', to: '/goodslist' },
+        { id: 5, src: img5, title: 'PLUS会员', to: '/goodslist' },
+        { id: 6, src: img6, title: '领金贴', to: '/goodslist' },
+        { id: 7, src: img7, title: '领券', to: '/goodslist' },
+        { id: 8, src: img8, title: '海淘服饰', to: '/goodslist' },
+        { id: 9, src: img9, title: '物流查询', to: '/goodslist' },
+        { id: 10, src: img10, title: '更多', to: '/goodslist' },
       ],
       goodsData: [],
       page: 1,
-      limit: 10
+      limit: 15,
+      loading: false,
+      finished: false,
     }
   },
   components: {
@@ -103,7 +96,12 @@ export default {
     },
     scrollHandle() {
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      scrollTop >= 50 ? this.$refs.Mysearch.style.backgroundColor = '#e43130' : this.$refs.Mysearch.style.backgroundColor = '#fff0'
+      scrollTop >= 50
+        ? this.$refs.Mysearch.style.backgroundColor = '#e43130'
+        : this.$refs.Mysearch.style.backgroundColor = '#fff0'
+    },
+    goodsRouter({ id }) {
+      this.$router.push(`/goodsDetail/${id}`)
     }
   },
   created() {
@@ -119,12 +117,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "../assets/css/common.scss";
-
 .homeContainer {
   position: relative;
   overflow: hidden;
-  background-color: #f6f6f6;
 
   // 搜索
   .search {
@@ -165,7 +160,7 @@ export default {
   // 轮播图
   .my-swipe {
     width: 95%;
-    height: 180px;
+    height: 160px;
     overflow: hidden;
     border-radius: 8px;
     margin: 5px auto;
@@ -194,15 +189,6 @@ export default {
     }
   }
 
-  // 商品列表
-  .goodslist {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 0 10px;
-  }
-
-  // backTop
 }
 </style>
 

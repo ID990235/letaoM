@@ -1,8 +1,7 @@
 <template>
   <div class="app">
     <!-- 头部导航栏 navbar -->
-    <van-nav-bar :title="title" left-text="返回" right-text="按钮" left-arrow @click-left="$router.back()"
-      v-show="isShowNavbar" />
+    <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="goBack" v-show="isShowNavbar" />
 
     <!--匹配一切二级路由  -->
     <router-view></router-view>
@@ -25,6 +24,11 @@ export default {
         this.title = title
       },
       // immediate: true
+    }
+  },
+  methods: {
+    goBack() {
+      this.title == '购物车' ? this.$router.push('/home/index') : this.$router.back()
     }
   }
 }

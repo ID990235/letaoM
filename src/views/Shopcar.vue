@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>购物车</h1>
     <van-empty description="你的购物车空空如也" :image="carImg">
       <van-button round type="danger" class="bottom-button" to="/home/index">去首页</van-button>
     </van-empty>

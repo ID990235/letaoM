@@ -7,3 +7,8 @@ export function fetchLunbo() {
 export function fetchGoods(page = 1, limit = 8) {
   return myaxios(`/api/recommend?page=${page}&limit=${limit}`)
 }
+
+// 获取商品的轮播图
+export function fetchGoodsImages(goodsid) {
+  return myaxios.get(`/api/getthumbimages/${goodsid}`)
+}
