@@ -10,5 +10,10 @@ export function fetchGoods(page = 1, limit = 8) {
 
 // 获取商品的轮播图
 export function fetchGoodsImages(goodsid) {
-  return myaxios.get(`/api/getthumbimages/${goodsid}`)
+  return myaxios(`/api/getthumbimages/${goodsid}`)
+}
+
+// 获取商品的基本信息
+export function fetchGoodsInfo(goodsid) {
+  return myaxios(`/api/getgoodsinfo/${goodsid}`)
 }

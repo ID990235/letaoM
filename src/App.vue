@@ -1,7 +1,9 @@
 <template>
   <div class="app">
     <!-- 头部导航栏 navbar -->
-    <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="goBack" v-show="isShowNavbar" />
+    <van-sticky>
+      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="goBack" v-show="isShowNavbar" />
+    </van-sticky>
 
     <!--匹配一切二级路由  -->
     <router-view></router-view>

@@ -93,6 +93,7 @@ export default {
     async _fetchGoods() {
       let { message } = await fetchGoods(this.page, this.limit)
       this.goodsData = message
+      this.goodsData.length % 2 === 1 && this.goodsData.pop()
     },
     scrollHandle() {
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;

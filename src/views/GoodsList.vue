@@ -8,11 +8,11 @@
               <div class="footer">
                 <div class="price_wrap">
                   <span class="price">&yen;<i class="price_int">{{ item.sell_price }}</i>.00</span>
-                  <s class="buy">&yen;{{ item.market_price }}</s>
+                  <span class="buy">&yen;{{ item.market_price }}</span>
                 </div>
                 <div class="info_wrap">
                   <span class="hot">热卖中</span>
-                  <span class="remain">剩余60件</span>
+                  <span class="remain">剩余{{ item.stock_quantity }}件</span>
                 </div>
               </div>
             </template>
@@ -39,7 +39,7 @@ export default {
       finished: false,
       refreshing: false,
       page: 0,
-      limit: 5,
+      limit: 6,
     };
   },
   components: {
