@@ -47,7 +47,16 @@
 
     <!-- sku组件 -->
     <van-sku v-model="show" :sku="sku" :goods="goods" :goods-id="goodsInfo.id" :hide-stock="sku.hide_stock"
-      :show-add-cart-btn="showAddCarBtn" @add-cart="addCart" />
+      :show-add-cart-btn="showAddCarBtn" @add-cart="addCart">
+      <template #sku-messages>
+        <div class="card">
+          <van-divider>商品规格</van-divider>
+          <span>商品货号：{{ goodsInfo.goods_no }}</span> |
+          <span>库存：{{ goodsInfo.stock_quantity }}件</span> |
+          <span>上架时间：{{ goodsInfo.add_time | dateFormat() }}</span>
+        </div>
+      </template>
+    </van-sku>
     <!-- backTop -->
     <backtop :scrollTop="500"></backtop>
   </div>
@@ -124,12 +133,11 @@ export default {
     addCart(skudata) {
       let { goodsId, selectedNum } = skudata;
       let { sell_price: price, title, zhaiyao: content } = this.goodsInfo
-      const cartData = { price, title, content, id: goodsId, number: selectedNum, isCheck: true, pic: this.goods.picture }
+      // const cartData = { price, title, content, id: goodsId, number: selectedNum, isCheck: true, pic: this.goods.picture }
+      const cartData = { price, id: goodsId, number: selectedNum, isCheck: true }
       this.addGoodsToCar(cartData)
       this.show = false
-      this.$dialog({
-        message: '已添加购物车'
-      })
+      this.$toast.success('添加购物车');
     }
   },
   computed: {

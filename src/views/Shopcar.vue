@@ -1,18 +1,18 @@
 <template>
-  <div>
+  <div style="padding-bottom: 50px;">
     <!-- 购物车提示UI界面 -->
     <van-empty description="你的购物车空空如也" :image="carImg" v-if="getCartNum == 0">
       <van-button round type="danger" class="bottom-button" to="/home/index">去首页</van-button>
     </van-empty>
 
-    <div v-for="(item, index) in cartData" :key="item.id" class="goods_item">
+    <div v-for="(item, index) in cartGoodslist" :key="item.id" class="goods_item">
       <van-swipe-cell>
-        <van-card :desc="item.content" :num="item.number" :title="item.title" class="goods-card" :thumb="item.pic">
+        <van-card :num="getGoodNum[item.id]" :title="item.title" class="goods-card" :thumb="item.thumb_path">
           <template #price>
-            <div class="price">&yen;<span class="price_int">{{ item.price }}</span></div>
+            <div class="price">&yen;<span class="price_int">{{ item.sell_price }}</span></div>
           </template>
           <template #footer>
-            <van-stepper min="0" :default-value="item.number" theme="round" button-size="22" disable-input
+            <van-stepper min="0" :default-value="getGoodNum[item.id]" button-size="22" disable-input
               @change="_revisalNum" :name="index" />
           </template>
         </van-card>
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <van-submit-bar class="mb50" :price="getTotalPrice * 100" button-text="提交订单" tip="仅支持微信支付">
+    <van-submit-bar class="mb50" :price="getTotalPrice * 100" button-text="提交订单">
       <van-checkbox class="allCheck" :value="getAllCheck" @click="_allCheck">全选</van-checkbox>
       <template>总计 {{ getTotalNum }} 件</template>
     </van-submit-bar>
@@ -35,6 +35,7 @@
 
 <script>
 import carImg from '../assets/images/car.png'
+import { fetchCartGoods } from '../api/index'
 // 导入vuex辅助函数
 import { mapGetters, mapState, mapMutations } from 'vuex'
 export default {
@@ -42,12 +43,12 @@ export default {
   data() {
     return {
       carImg,
-      allSelected: true
+      cartGoodslist: [],
     }
   },
   computed: {
-    ...mapGetters(['getCartNum', 'getIsCheck', 'getAllCheck', 'getTotalPrice', 'getTotalNum']),
-    ...mapState(['cartData'])
+    ...mapGetters(['getCartNum', 'getIsCheck', 'getAllCheck', 'getTotalPrice', 'getTotalNum', 'getGoodNum']),
+    ...mapState(['cartData', 'allSelected'])
   },
   methods: {
     ...mapMutations(['revisalNum', 'removeGoods', 'setItemCheck', 'allCheck']),
@@ -58,6 +59,7 @@ export default {
     // 删除商品
     _removeGoods(index) {
       this.removeGoods(index)
+      this.cartGoodslist.splice(index, 1)
     },
     // 设置单选状态
     _setItemCheck(index, check) {
@@ -65,9 +67,17 @@ export default {
     },
     // 设置全选状态
     _allCheck() {
-      this.allSelected = !this.allSelected
-      this.allCheck(this.allSelected)
+      this.allCheck()
+    },
+    async _fetchCartGoods() {
+      let ids = this.cartData.map(item => item.id).join(',')
+      if (!ids) return
+      let { message } = await fetchCartGoods(ids)
+      this.cartGoodslist = message.reverse()
     }
+  },
+  created() {
+    this._fetchCartGoods()
   }
 }
 </script>

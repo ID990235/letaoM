@@ -6,7 +6,8 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    cartData: []
+    cartData: [],
+    allSelected: false,
   },
   mutations: {
     // 添加商品到购物车
@@ -26,11 +27,13 @@ const store = new Vuex.Store({
     // 设置商品状态
     setItemCheck(state, data) {
       const { index, check } = data;
-      state.cartData[index].isCheck = !state.cartData[index].isCheck
+      state.cartData[index].isCheck = check
+      state.allSelected = state.cartData.every(item => item.isCheck == true)
     },
     // 设置全选状态
     allCheck(state, data) {
-      state.cartData.forEach(item => item.isCheck = data)
+      state.allSelected = !state.allSelected
+      state.cartData.forEach(item => item.isCheck = state.allSelected)
     }
   },
   getters: {
@@ -46,15 +49,14 @@ const store = new Vuex.Store({
     },
     // 全选按钮获取所有商品是否选中
     getAllCheck(state) {
-      let ischeck = false
-      state.cartData.length == 0 ? ischeck = false : ischeck = state.cartData.every((item) => item.isCheck == true)
-      return ischeck
+      state.cartData.length == 0 ? state.allSelected = false : state.allSelected = state.cartData.every((item) => item.isCheck == true)
+      return state.allSelected
     },
     // 获取总价格
     getTotalPrice(state) {
       let totalPrice = 0
-      state.cartData.map((item, value) => {
-        if (state.cartData[value].isCheck == true) return totalPrice += item.price * item.number
+      state.cartData.map(item => {
+        if (item.isCheck == true) return totalPrice += item.price * item.number
       })
       return totalPrice
     },
@@ -62,9 +64,15 @@ const store = new Vuex.Store({
     getTotalNum(state) {
       let totalNum = 0
       state.cartData.map((item, value) => {
-        if (state.cartData[value].isCheck == true) return totalNum += item.number
+        if (item.isCheck == true) return totalNum += item.number
       })
       return totalNum
+    },
+    // 获取某个商品数量
+    getGoodNum(state) {
+      let mapObj = {}
+      state.cartData.map(item => mapObj[item.id] = item.number)
+      return mapObj
     }
   },
   // plugins: [createPersistedState()]

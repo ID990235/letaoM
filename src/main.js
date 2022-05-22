@@ -9,6 +9,8 @@ import './assets/css/common.scss'
 import '../node_modules/nprogress/nprogress.css'
 // 导入vuex状态管理
 import store from './store/index'
+// 导入工具
+import './utils/index'
 
 import router from './router/index'
 import './Vueuse/index'
