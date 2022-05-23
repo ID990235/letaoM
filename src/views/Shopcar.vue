@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-bottom: 50px;">
+  <div class="shopcar-container">
     <!-- 购物车提示UI界面 -->
     <van-empty description="你的购物车空空如也" :image="carImg" v-if="getCartNum == 0">
       <van-button round type="danger" class="bottom-button" to="/home/index">去首页</van-button>
@@ -26,10 +26,13 @@
       </div>
     </div>
 
-    <van-submit-bar class="mb50" :price="getTotalPrice * 100" button-text="提交订单">
+    <van-submit-bar style="bottom:50px;" :price="getTotalPrice * 100" button-text="提交订单" :disabled="getTotalNum == 0">
       <van-checkbox class="allCheck" :value="getAllCheck" @click="_allCheck">全选</van-checkbox>
       <template>总计 {{ getTotalNum }} 件</template>
     </van-submit-bar>
+
+    <!-- backTop -->
+    <backtop></backtop>
   </div>
 </template>
 
@@ -38,6 +41,8 @@ import carImg from '../assets/images/car.png'
 import { fetchCartGoods } from '../api/index'
 // 导入vuex辅助函数
 import { mapGetters, mapState, mapMutations } from 'vuex'
+// 导入backTop组件
+import backtop from '../components/backTop.vue'
 export default {
   name: 'Shopcar',
   data() {
@@ -45,6 +50,9 @@ export default {
       carImg,
       cartGoodslist: [],
     }
+  },
+  components: {
+    backtop
   },
   computed: {
     ...mapGetters(['getCartNum', 'getIsCheck', 'getAllCheck', 'getTotalPrice', 'getTotalNum', 'getGoodNum']),
@@ -69,12 +77,14 @@ export default {
     _allCheck() {
       this.allCheck()
     },
+    // 通过所添加的商品id 获取对应数据渲染购物车
     async _fetchCartGoods() {
       let ids = this.cartData.map(item => item.id).join(',')
       if (!ids) return
       let { message } = await fetchCartGoods(ids)
       this.cartGoodslist = message.reverse()
-    }
+    },
+    
   },
   created() {
     this._fetchCartGoods()
@@ -82,46 +92,46 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.mb50 {
-  margin-bottom: 50px;
-}
+.shopcar-container {
+  padding-bottom: 50px;
 
-.bottom-button {
-  width: 160px;
-  height: 40px;
-}
+  .bottom-button {
+    width: 160px;
+    height: 40px;
+  }
 
-.goods_item {
-  margin-bottom: 15px;
+  .goods_item {
+    margin-bottom: 15px;
 
-  .goods-card {
-    margin: 0;
-    background-color: #fff;
+    .goods-card {
+      margin: 0;
+      background-color: #fff;
 
-    .price {
-      color: red;
+      .price {
+        color: red;
+      }
+
+      .price_int {
+        font-size: 20px;
+      }
     }
 
-    .price_int {
-      font-size: 20px;
+    .delete-button {
+      height: 100%;
+    }
+
+    .ck_wrap {
+      margin-left: 5px;
+      background-color: #fff;
+
+      .ck_item {
+        width: 22px
+      }
     }
   }
 
-  .delete-button {
-    height: 100%;
+  .allCheck {
+    margin-right: 4px
   }
-
-  .ck_wrap {
-    margin-left: 5px;
-    background-color: #fff;
-
-    .ck_item {
-      width: 22px
-    }
-  }
-}
-
-.allCheck {
-  margin-right: 4px
 }
 </style>

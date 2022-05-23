@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import NProgress from 'nprogress'
+import store from '../store/index'
+import { Dialog } from 'vant'
 
 // import Index from '../views/Index.vue'
 // import Home from '../views/Home.vue'
@@ -35,7 +37,8 @@ const router = new VueRouter({
             name: 'shopcar',
             title: '购物车',
             isShowNavbar: false,
-            backRouter: '/home'
+            backRouter: '/home',
+            requireAuth: true,
           }
         },
         {
@@ -44,7 +47,8 @@ const router = new VueRouter({
           meta: {
             name: 'user',
             title: '我的',
-            isShowNavbar: true
+            isShowNavbar: true,
+            requireAuth: true,
           }
         },
       ]
@@ -66,6 +70,32 @@ const router = new VueRouter({
         isShowNavbar: false,
       }
     },
+    {
+      path: "/login",
+      component: () => import('../views/Login.vue'),
+      meta: {
+        name: "login",
+        isShowNavbar: false,
+        title: '登录',
+      }
+    },
+    {
+      path: "/register",
+      component: () => import('../views/Register.vue'),
+      meta: {
+        name: "register",
+        isShowNavbar: false,
+        title: '注册'
+      }
+    },
+    {
+      path: "/search",
+      component: () => import('../views/Search.vue'),
+      meta: {
+        name: "search",
+        isShowNavbar: true
+      }
+    },
   ]
 })
 
@@ -75,7 +105,19 @@ NProgress.configure({
 
 router.beforeEach((to, from, next) => {
   NProgress.start();
-  next();
+  // 判断需要校验的路由
+  if (to.meta.requireAuth) {
+    if (store.state.token) {
+      next()
+    } else {
+      next({
+        path: '/login?redirect=' + to.fullPath
+      })
+    }
+  } else {
+    next();
+  }
+
 })
 
 router.afterEach((to, from) => {

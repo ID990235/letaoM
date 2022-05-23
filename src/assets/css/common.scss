@@ -92,3 +92,17 @@ i {
     text-decoration: line-through;
   }
 }
+
+.flex_c_c {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-gray-color {
+  color: #ccc !important;
+}

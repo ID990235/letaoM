@@ -8,6 +8,8 @@ const store = new Vuex.Store({
   state: {
     cartData: [],
     allSelected: false,
+    token: '',
+    userInfo: {},
   },
   mutations: {
     // 添加商品到购物车
@@ -34,7 +36,23 @@ const store = new Vuex.Store({
     allCheck(state, data) {
       state.allSelected = !state.allSelected
       state.cartData.forEach(item => item.isCheck = state.allSelected)
-    }
+    },
+    // 设置用户信息
+    setUserInfo(state, userInfo) {
+      state.userInfo = userInfo
+    },
+    // 设置token
+    setToken(state, token) {
+      state.token = token
+    },
+    // 清除原用户信息和token
+    clearUserInfo(state) {
+      state.token = '';
+      state.userInfo = ''
+    },
+    updateAvatar(state, newAvatar) {
+      state.userInfo.avatar = newAvatar
+    },
   },
   getters: {
     // 获取购物车数量
@@ -56,7 +74,7 @@ const store = new Vuex.Store({
     getTotalPrice(state) {
       let totalPrice = 0
       state.cartData.map(item => {
-        if (item.isCheck == true) return totalPrice += item.price * item.number
+        if (item.isCheck) return totalPrice += item.price * item.number
       })
       return totalPrice
     },
@@ -64,7 +82,7 @@ const store = new Vuex.Store({
     getTotalNum(state) {
       let totalNum = 0
       state.cartData.map((item, value) => {
-        if (item.isCheck == true) return totalNum += item.number
+        if (item.isCheck) return totalNum += item.number
       })
       return totalNum
     },
@@ -75,7 +93,7 @@ const store = new Vuex.Store({
       return mapObj
     }
   },
-  // plugins: [createPersistedState()]
+  plugins: [createPersistedState()]
 })
 
 export default store

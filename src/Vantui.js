@@ -2,10 +2,10 @@ import Vue from 'vue';
 import 'vant/lib/index.css';
 
 import {
-  Tabbar, TabbarItem, NavBar, Badge, SubmitBar, Empty, Button, Card, Stepper,
-  Search, Sticky, Swipe, SwipeItem, Grid, GridItem, Divider, Lazyload, Dialog, Cell,
+  Tabbar, TabbarItem, NavBar, Badge, SubmitBar, Empty, Button, Card, Stepper, Field,
+  Search, Sticky, Swipe, SwipeItem, Grid, GridItem, Divider, Lazyload, Dialog, Form,
   Toast, List, PullRefresh, Icon, GoodsAction, GoodsActionIcon, GoodsActionButton, Sku,
-  SwipeCell, Checkbox
+  SwipeCell, Checkbox, Image as VanImage, Cell, CellGroup, ActionSheet, Uploader
 } from 'vant';
 Vue.use(Tabbar)
 Vue.use(TabbarItem)
@@ -30,11 +30,17 @@ Vue.use(GoodsActionButton);
 Vue.use(GoodsActionIcon);
 Vue.use(Sku);
 Vue.use(Dialog);
-// Vue.use(Cell);
 Vue.use(Card);
 Vue.use(Stepper);
 Vue.use(SwipeCell);
 Vue.use(Checkbox);
+Vue.use(Form);
+Vue.use(Field);
+Vue.use(VanImage);
+Vue.use(Cell);
+Vue.use(CellGroup);
+Vue.use(ActionSheet);
+Vue.use(Uploader);
 Vue.use(Lazyload, {
   lazyComponent: true,
 });

@@ -6,7 +6,7 @@
     <!-- 搜索栏 -->
     <van-sticky>
       <div class="search">
-        <van-search ref="Mysearch" background="#fff0" shape="round" placeholder="男士毛衣">
+        <van-search ref="Mysearch" background="#fff0" shape="round" placeholder="男士毛衣" @focus="goSearchPage">
           <template #left>
             <div class="logoWrap">
               <img src="../assets/images/logo.png">
@@ -86,23 +86,31 @@ export default {
     Goods, backtop
   },
   methods: {
+    // 获取轮播图数据
     async _fetchLunbo() {
       let { message } = await fetchLunbo()
       this.lunBoData = message
     },
+    // 获取商品数据
     async _fetchGoods() {
       let { message } = await fetchGoods(this.page, this.limit)
       this.goodsData = message
       this.goodsData.length % 2 === 1 && this.goodsData.pop()
     },
+    // 滑动页面顶部搜索栏背景变化
     scrollHandle() {
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
       scrollTop >= 50
         ? this.$refs.Mysearch.style.backgroundColor = '#e43130'
         : this.$refs.Mysearch.style.backgroundColor = '#fff0'
     },
+    // 每个商品路由跳转
     goodsRouter({ id }) {
       this.$router.push(`/goodsDetail/${id}`)
+    },
+    // 跳转到搜索页面
+    goSearchPage() {
+      this.$router.push('/search')
     }
   },
   created() {
