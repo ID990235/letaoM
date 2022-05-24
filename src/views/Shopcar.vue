@@ -1,5 +1,19 @@
 <template>
   <div class="shopcar-container">
+
+    <!-- 收获地址 -->
+    <div v-if="cartGoodslist.length" class="addressWrap">
+      <div v-if="hasAddress" class="address">
+        <van-icon name="location-o" />
+        <div class="info">
+          <div>{{ address.name + ' / ' + address.tel }} 邮编: {{ address.postalCode }}</div>
+          <div>{{ textAddress }}</div>
+        </div>
+      </div>
+      <!-- 无设置收货地址 -->
+      <van-button v-else block type="info" @click="$router.push('/addaddress')" plain>添加地址</van-button>
+    </div>
+
     <!-- 购物车提示UI界面 -->
     <van-empty description="你的购物车空空如也" :image="carImg" v-if="getCartNum == 0">
       <van-button round type="danger" class="bottom-button" to="/home/index">去首页</van-button>
@@ -26,7 +40,7 @@
       </div>
     </div>
 
-    <van-submit-bar style="bottom:50px;" :price="getTotalPrice * 100" button-text="提交订单" :disabled="getTotalNum == 0">
+    <van-submit-bar style="bottom:50px;" :price="getTotalPrice * 100" button-text="提交订单" :disabled="isDisabled">
       <van-checkbox class="allCheck" :value="getAllCheck" @click="_allCheck">全选</van-checkbox>
       <template>总计 {{ getTotalNum }} 件</template>
     </van-submit-bar>
@@ -39,6 +53,7 @@
 <script>
 import carImg from '../assets/images/car.png'
 import { fetchCartGoods } from '../api/index'
+import { fetchGetUserAddress } from "../api/address.js"
 // 导入vuex辅助函数
 import { mapGetters, mapState, mapMutations } from 'vuex'
 // 导入backTop组件
@@ -49,6 +64,8 @@ export default {
     return {
       carImg,
       cartGoodslist: [],
+      address: {},
+      hasAddress: false, // hasAddress 记录是否有地址
     }
   },
   components: {
@@ -56,10 +73,21 @@ export default {
   },
   computed: {
     ...mapGetters(['getCartNum', 'getIsCheck', 'getAllCheck', 'getTotalPrice', 'getTotalNum', 'getGoodNum']),
-    ...mapState(['cartData', 'allSelected'])
+    ...mapState(['cartData', 'allSelected']),
+    textAddress() {
+      let { province, city, country, addressDetail } = this.address
+      return `${province}/${city}/${country}/${addressDetail}`
+    },
+    isDisabled() {
+      // 没有地址或者总数量为0则提交按钮不可点击
+      if (this.hasAddress === false || this.cartGoodslist === 0) {
+        return true
+      }
+      return false
+    }
   },
   methods: {
-    ...mapMutations(['revisalNum', 'removeGoods', 'setItemCheck', 'allCheck']),
+    ...mapMutations(['revisalNum', 'removeGoods', 'setItemCheck', 'allCheck', 'clearUserInfo']),
     // 修改商品数量
     _revisalNum(num, { name: index }) {
       this.revisalNum({ num, index })
@@ -84,16 +112,65 @@ export default {
       let { message } = await fetchCartGoods(ids)
       this.cartGoodslist = message.reverse()
     },
-    
+    // 获取用户地址
+    async getUserAddress() {
+      let user_id = this.$store.state.userInfo.id;
+      if (!user_id && this.cartData.length !== 0) {
+        this.$dialog.alert({
+          message: '请先登录哦'
+        }).then(() => {
+          this.$router.push('/login')
+        })
+        return
+      }
+      if (user_id) {
+        let result = await fetchGetUserAddress(user_id);
+        if (result.length === 0) {
+          this.hasAddress = false
+          this.$dialog({
+            message: '请完善收货地址'
+          })
+          return;
+        } else {
+          this.hasAddress = true
+        }
+
+        if (result.length === 1) {
+          this.address = result[0];
+          return
+        }
+
+        let defaultAddress = result.find(item => item.isDefault == 1)
+        defaultAddress ? this.address = defaultAddress : this.address = result[0]
+      }
+    }
   },
   created() {
     this._fetchCartGoods()
+    this.getUserAddress()
   }
 }
 </script>
 <style lang="scss" scoped>
 .shopcar-container {
   padding-bottom: 50px;
+
+  .addressWrap {
+    .address {
+      display: flex;
+      align-items: center;
+      padding: 4px 10px;
+      background-color: #fff;
+      border-radius: 6px;
+      margin: 6px 0;
+
+      .van-icon {
+        margin-right: 20px;
+        color: red;
+        font-size: 20px;
+      }
+    }
+  }
 
   .bottom-button {
     width: 160px;

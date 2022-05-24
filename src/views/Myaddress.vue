@@ -27,6 +27,7 @@ export default {
 
       if (addressAll.length === 1) {
         this.chosenAddressId = addressAll[0].id
+        this.lists = addressAll;
         return
       }
 

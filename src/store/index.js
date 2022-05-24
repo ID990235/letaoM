@@ -48,8 +48,10 @@ const store = new Vuex.Store({
     // 清除原用户信息和token
     clearUserInfo(state) {
       state.token = '';
-      state.userInfo = ''
+      state.userInfo = '';
+      state.cartData = []
     },
+    // 更新头像
     updateAvatar(state, newAvatar) {
       state.userInfo.avatar = newAvatar
     },

@@ -38,7 +38,6 @@ const router = new VueRouter({
             title: '购物车',
             isShowNavbar: false,
             backRouter: '/home',
-            requireAuth: true,
           }
         },
         {

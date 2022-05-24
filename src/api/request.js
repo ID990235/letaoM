@@ -10,11 +10,11 @@ const instance = axios.create({
 
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
+  config.headers['If-Modified-Since'] = 0;
   // 设置token请求头给服务器
   if (store.state.token) {
     // 校验的token时效过了或者删除则返回状态为40001
     config.headers['token'] = store.state.token;
-    config.headers['If-Modified-Since'] = 0;
   }
 
   Toast.loading({
