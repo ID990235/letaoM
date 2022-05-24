@@ -3,21 +3,22 @@
     <div class="userBg">
       <div class="userInfo">
         <div class="avatarImg">
-          <van-image round width="80px" height="80px" :src="avatar" @click="show = true" />
+          <van-image ref="myHeadImg" round width="80px" height="80px" :src="avatar" @click="show = true" />
         </div>
         <div class="username">
-          登录名：{{ $store.state.userInfo.username }}
+          用户名：{{ $store.state.userInfo.username }}
         </div>
       </div>
     </div>
-    <van-uploader ref="myUpload" :after-read="afterRead" v-show="false" :max-count="1" />
+    <van-uploader ref="myUpload" :max-size="60 * 1024" :after-read="afterRead" @oversize="onOversize" v-show="false"
+      :max-count="1" />
     <van-action-sheet v-model="show" :actions="actions" @select="onSelect" cancel-text="取消" />
 
     <div class="flex_c_c">
       <div class="info">
         <van-cell-group>
           <van-cell title="我的订单" value="全部订单" @click="$router.push('/orderlist')" is-link />
-          <van-cell title="收货地址" @click="$router.push('/address')" is-link />
+          <van-cell title="收货地址" @click="$router.push('/myaddress')" is-link />
           <van-cell title="设置" is-link />
           <van-cell title="关于乐淘" value="v1.0.3" />
           <van-button type="danger" block @click="logout">退出登录 </van-button>
@@ -34,7 +35,7 @@ export default {
   data() {
     return {
       show: false,
-      actions: [{ name: '设置头像' }, { name: '下载头像' }],
+      actions: [{ name: '设置头像' }],
     }
   },
   computed: {
@@ -56,9 +57,7 @@ export default {
     },
     onSelect(item) {
       this.show = false;
-      if (item.name == '设置头像') {
-        this.$refs.myUpload.$refs.input.click()
-      }
+      if (item.name == '设置头像') this.$refs.myUpload.$refs.input.click()
     },
     async afterRead(file) {
       let user_id = this.$store.state.userInfo.id;
@@ -68,10 +67,13 @@ export default {
         formData.append('user_id', user_id)
         formData.append('file', file.file)
         let { message, status, src } = await upload(formData);
-        this.$toast(message)
+        this.$toast.success(message)
         if (status === 0) this.$store.commit('updateAvatar', src)
       }
     },
+    onOversize() {
+      this.$toast.fail('文件大小不能超过 60kb');
+    }
   }
 }
 </script>

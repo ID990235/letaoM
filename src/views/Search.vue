@@ -37,7 +37,7 @@ export default {
       document.getElementsByClassName('van-field__control')[0].focus();
     }
   },
-  mounted() { 
+  mounted() {
     this.onFocus()
   }
 };
@@ -46,7 +46,11 @@ export default {
 <style lang="scss" scoped>
 .search-container {
   .search {
-    padding: 5px 10px 5px 5px;
+    padding: 8px 0px;
+
+    .van-search__action {
+      line-height: 0px;
+    }
   }
 }
 </style>

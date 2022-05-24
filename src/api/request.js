@@ -5,13 +5,14 @@ import store from '../store/index'
 import router from '../router'
 
 const instance = axios.create({
-  baseURL: 'http://api.w0824.com'
+  baseURL: 'http://api.w0824.com/api'
 })
 
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 设置token请求头给服务器
   if (store.state.token) {
+    // 校验的token时效过了或者删除则返回状态为40001
     config.headers['token'] = store.state.token;
     config.headers['If-Modified-Since'] = 0;
   }

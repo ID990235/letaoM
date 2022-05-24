@@ -1,13 +1,13 @@
 import myaxios from './request'
 
 export function fetchLogin(username, password) {
-  return myaxios.post('/api/login', { username, password })
+  return myaxios.post('/login', { username, password })
 }
 
 export function upload(formData) {
-  return myaxios.post('/api/upload', formData)
+  return myaxios.post('/upload', formData)
 }
 
 export function fetchRegister(formData) {
-  return myaxios.post('/api/register', formData)
+  return myaxios.post('/register', formData)
 }

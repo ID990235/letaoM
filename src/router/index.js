@@ -89,6 +89,36 @@ const router = new VueRouter({
       }
     },
     {
+      path: "/myaddress",
+      component: () => import('../views/Myaddress.vue'),
+      meta: {
+        name: "myaddress",
+        isShowNavbar: false,
+        title: '我的地址',
+        requireAuth: true,
+      }
+    },
+    {
+      path: "/addAddress",
+      component: () => import('../views/Addaddress.vue'),
+      meta: {
+        name: "addAddress",
+        isShowNavbar: false,
+        title: '添加地址',
+        requireAuth: true,
+      }
+    },
+    {
+      path: "/editAddress/:addressInfo",
+      component: () => import('../views/Editaddress.vue'),
+      meta: {
+        name: "editAddress",
+        isShowNavbar: false,
+        title: '编辑地址',
+        requireAuth: true,
+      }
+    },
+    {
       path: "/search",
       component: () => import('../views/Search.vue'),
       meta: {
