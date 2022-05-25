@@ -24,3 +24,10 @@ export function fetchGoodsInfo(goodsid) {
 export function fetchCartGoods(ids) {
   return myaxios(`/getshopcarlist/${ids}`)
 }
+
+// 商品搜索接口
+// search?value=i&sort=buy&page=1&pagesize=10
+export function fetchSearchGoods(options) {
+  let { value, sort, order, page, pagesize } = options;
+  return axios.get(`/search?value=${value}&sort=${sort}&order=${order}&page=${page}&pagesize=${pagesize}`)
+}

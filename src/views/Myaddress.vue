@@ -27,12 +27,10 @@ export default {
 
       if (addressAll.length === 1) {
         this.chosenAddressId = addressAll[0].id
-        this.lists = addressAll;
-        return
       }
 
       addressAll.map((item, index) => {
-        if (item.isDefault == true) {
+        if (item.isDefault == 1) {
           let defaultAddress = addressAll[index]
           addressAll.splice(index, 1)
           addressAll.unshift(defaultAddress)

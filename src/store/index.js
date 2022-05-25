@@ -45,7 +45,7 @@ const store = new Vuex.Store({
     setToken(state, token) {
       state.token = token
     },
-    // 清除原用户信息和token
+    // 退出清除原用户信息和token
     clearUserInfo(state) {
       state.token = '';
       state.userInfo = '';
@@ -55,6 +55,10 @@ const store = new Vuex.Store({
     updateAvatar(state, newAvatar) {
       state.userInfo.avatar = newAvatar
     },
+    // 提交订单清除订单数据
+    clearCartData(state) {
+      state.cartData = []
+    }
   },
   getters: {
     // 获取购物车数量
@@ -93,6 +97,11 @@ const store = new Vuex.Store({
       let mapObj = {}
       state.cartData.map(item => mapObj[item.id] = item.number)
       return mapObj
+    },
+    // 获取每个商品的id
+    getGoodsid(state) {
+      let ids = state.cartData.map(item => item.id).join(',')
+      return ids
     }
   },
   plugins: [createPersistedState()]

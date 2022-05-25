@@ -125,6 +125,23 @@ const router = new VueRouter({
         isShowNavbar: true
       }
     },
+    {
+      path: "/search-result",
+      component: () => import('../views/SearchResult.vue'),
+      meta: {
+        name: "search-result",
+        isShowNavbar: true
+      }
+    },
+    {
+      path: "/order",
+      component: () => import('../views/Order.vue'),
+      meta: {
+        name: "order",
+        isShowNavbar: false,
+        title: '订单',
+      }
+    },
   ]
 })
 

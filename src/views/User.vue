@@ -17,7 +17,7 @@
     <div class="flex_c_c">
       <div class="info">
         <van-cell-group>
-          <van-cell title="我的订单" value="全部订单" @click="$router.push('/orderlist')" is-link />
+          <van-cell title="我的订单" value="全部订单" @click="$router.push('/order')" is-link />
           <van-cell title="收货地址" @click="$router.push('/myaddress')" is-link />
           <van-cell title="设置" is-link />
           <van-cell title="关于乐淘" value="v1.0.3" />

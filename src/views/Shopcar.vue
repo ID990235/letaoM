@@ -40,7 +40,8 @@
       </div>
     </div>
 
-    <van-submit-bar style="bottom:50px;" :price="getTotalPrice * 100" button-text="提交订单" :disabled="isDisabled">
+    <van-submit-bar @submit="orderCommit" style="bottom:50px;" :price="getTotalPrice * 100" button-text="提交订单"
+      :disabled="isDisabled">
       <van-checkbox class="allCheck" :value="getAllCheck" @click="_allCheck">全选</van-checkbox>
       <template>总计 {{ getTotalNum }} 件</template>
     </van-submit-bar>
@@ -54,10 +55,12 @@
 import carImg from '../assets/images/car.png'
 import { fetchCartGoods } from '../api/index'
 import { fetchGetUserAddress } from "../api/address.js"
+import { fetchCommitOrder } from "../api/order.js"
 // 导入vuex辅助函数
 import { mapGetters, mapState, mapMutations } from 'vuex'
 // 导入backTop组件
 import backtop from '../components/backTop.vue'
+import { genOrderId } from '../utils/tools'
 export default {
   name: 'Shopcar',
   data() {
@@ -72,7 +75,7 @@ export default {
     backtop
   },
   computed: {
-    ...mapGetters(['getCartNum', 'getIsCheck', 'getAllCheck', 'getTotalPrice', 'getTotalNum', 'getGoodNum']),
+    ...mapGetters(['getCartNum', 'getIsCheck', 'getAllCheck', 'getTotalPrice', 'getTotalNum', 'getGoodNum', 'getGoodsid']),
     ...mapState(['cartData', 'allSelected']),
     textAddress() {
       let { province, city, country, addressDetail } = this.address
@@ -80,14 +83,14 @@ export default {
     },
     isDisabled() {
       // 没有地址或者总数量为0则提交按钮不可点击
-      if (this.hasAddress === false || this.cartGoodslist === 0) {
+      if (this.hasAddress === false || this.getTotalNum === 0) {
         return true
       }
       return false
     }
   },
   methods: {
-    ...mapMutations(['revisalNum', 'removeGoods', 'setItemCheck', 'allCheck', 'clearUserInfo']),
+    ...mapMutations(['revisalNum', 'removeGoods', 'setItemCheck', 'allCheck', 'clearUserInfo', 'clearCartData']),
     // 修改商品数量
     _revisalNum(num, { name: index }) {
       this.revisalNum({ num, index })
@@ -107,8 +110,6 @@ export default {
     },
     // 通过所添加的商品id 获取对应数据渲染购物车
     async _fetchCartGoods() {
-      let ids = this.cartData.map(item => item.id).join(',')
-      if (!ids) return
       let { message } = await fetchCartGoods(ids)
       this.cartGoodslist = message.reverse()
     },
@@ -123,8 +124,10 @@ export default {
         })
         return
       }
+
       if (user_id) {
         let result = await fetchGetUserAddress(user_id);
+        // 判断用户是否有添加收货地址
         if (result.length === 0) {
           this.hasAddress = false
           this.$dialog({
@@ -135,17 +138,51 @@ export default {
           this.hasAddress = true
         }
 
+        // 只有一个地址默认地址就是本身
         if (result.length === 1) {
           this.address = result[0];
           return
         }
 
+        // 有多个地址 但没有默认地址  默认选中第一个为默认地址
         let defaultAddress = result.find(item => item.isDefault == 1)
         defaultAddress ? this.address = defaultAddress : this.address = result[0]
       }
+    },
+    async orderCommit() {
+      // 准备提交订单数据
+      const user_id = this.$store.state.userInfo.id;
+      const orderData = {
+        user_id,
+        order_id: genOrderId(),
+        address_id: this.address.id,
+        total_price: this.getTotalPrice,
+        number: this.getTotalNum,
+        goods_ids: this.getGoodsid
+      }
+
+      this.$toast.loading({
+        duration: 0,
+        message: '提交订单中',
+        forbidClick: true,
+        overlay: true
+      })
+
+      // 提交订单接口
+      const { message, status } = await fetchCommitOrder(orderData);
+      this.$toast(message);
+
+      // 下单成功清空购物车 跳转至订单页
+      if (status === 0) {
+        this.clearCartData()
+        this.$router.replace('/order')
+      }
+
+      this.$toast.clear()
     }
   },
   created() {
+    if (!this.getGoodsid) return
     this._fetchCartGoods()
     this.getUserAddress()
   }

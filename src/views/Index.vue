@@ -8,7 +8,9 @@
     </van-tabbar>
 
     <!--匹配三个子路由  子路由需要在父路由下使用  -->
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 

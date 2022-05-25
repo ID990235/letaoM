@@ -13,18 +13,19 @@ export default {
       areaList,
       areaCode: '',
       isDefault: '',
-      fromAddressInfo: JSON.parse(this.$route.params.addressInfo)
+      fromAddressInfo: JSON.parse(this.$route.params.addressInfo)  // 原地址数据
     };
   },
   created() {
-    // 设置默认值 防止地区或默认地址未修改空值
+    // 设置默认值 防止地区编码和默认地址无修改地区编码空值或默认地址状态为0
     this.areaCode = this.fromAddressInfo.areaCode;
-    this.isDefault = this.fromAddressInfo.isDefault
+    // this.isDefault = this.fromAddressInfo.isDefault
   },
   methods: {
     // 编辑地址保存
     async onSave(addressInfo) {
-      let isDefault = this.isDefault ? 1 : 0;
+      // let isDefault = this.isDefault ? 1 : 0;
+      let isDefault = addressInfo.isDefault ? 1 : 0;
       let areaCode = this.areaCode;
       let country = addressInfo.county
 
@@ -34,19 +35,20 @@ export default {
       status === 0 ? (this.$toast.success(message), this.$router.back()) : this.$toast.fail(message)
     },
     // 删除地址
-    async deleteAddress(current) {
-      const { id } = current
+    async deleteAddress(addressInfo) {
+      const { id } = addressInfo
       const { status, message } = await fetchDeleteAddress(id)
       status === 0 ? (this.$toast.success(message), this.$router.back()) : this.$toast.fail(message)
     },
     changeDefault(bool) {
-      this.isDefault = bool;
+      // this.isDefault = bool;
     },
     changeArea(data) {
       this.areaCode = data.map(item => item.code).join('-');
     },
   },
   computed: {
+    // 编辑页面回显
     addressInfo() {
       let address = JSON.parse(this.$route.params.addressInfo)
       address.isDefault = address.isDefault ? true : false;
