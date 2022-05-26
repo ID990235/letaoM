@@ -1,33 +1,46 @@
 <template>
-  <van-tabs v-model="active" @click="tabsClick">
+  <div>
+    <van-tabs v-model="active" @click="tabsClick">
 
-    <van-tab v-for="item in orderTabs" :key="item.title" :title="item.title">
-
-      <div v-for="item in filterOrderGoods" :key="item.id" style="margin-top:8px;">
-        <div class="order_goods_hd">
-          <div class="hd_left">
-            <div class="ht_logo"><img src="../assets/images/logo.png"><span>海淘商城</span></div>
+      <van-tab v-for="item in orderTabs" :key="item.title" :title="item.title">
+        <div v-for="item in filterOrderGoods" :key="item.id" style="margin-top:8px;"
+          @click="$router.push('/orderdetail/' + item.order_id)">
+          <div class="order_goods_hd">
+            <div class="hd_left">
+              <div class="ht_logo"><img src="../assets/images/logo.png"><span>海淘商城</span></div>
+            </div>
           </div>
+          <van-card :num="item.number" :price="item.goodsInfo.message[0].sell_price" :desc="item.pay_way"
+            :title="item.goodsInfo.message[0].title" :thumb="item.goodsInfo.message[0].thumb_path">
+            <template #tags>
+              <span>下单时间：{{ item.add_time | timeFormat() }}</span>
+            </template>
+            <template #footer>
+              <van-button size="mini" type="danger" v-if="item.status === 0">立即付款</van-button>
+              <van-button size="mini" type="primary" v-if="item.is_out === 1">物流信息</van-button>
+              <van-button size="mini" type="primary" v-if="item.is_out === 1" v-clipboard:copy="item.order_id"
+                v-clipboard:success="copy">复制订单号
+              </van-button>
+              <template v-if="item.status === 2">
+                <van-button size="mini" type="info">已完成</van-button>
+                <van-button size="mini" type="warning">评价</van-button>
+              </template>
+              <van-button size="mini" type="danger" v-if="item.status === 0">客服</van-button>
+            </template>
+          </van-card>
         </div>
-        <van-card num="2" :price="item.goodsInfo.message[0].sell_price" desc="描述信息"
-          :title="item.goodsInfo.message[0].title" :thumb="item.goodsInfo.message[0].thumb_path">
-          <template #tags>
-            <!-- <van-tag plain type="danger">标签</van-tag>
-          <van-tag plain type="danger">标签</van-tag> -->
-          </template>
-          <template #footer>
-            <van-button size="mini">按钮</van-button>
-            <van-button size="mini">按钮</van-button>
-          </template>
-        </van-card>
-      </div>
-    </van-tab>
-  </van-tabs>
+      </van-tab>
+
+    </van-tabs>
+    <backtop></backtop>
+  </div>
 </template>
 
 <script>
 import { fetchUserOrder } from '../api/order'
 import { fetchCartGoods } from '../api/index'
+// 导入backTop组件
+import backtop from '../components/backTop.vue'
 export default {
   data() {
     return {
@@ -39,8 +52,11 @@ export default {
         { title: "完成", status: "2" }
       ],
       allOrder: [],
-      status: "all"
+      status: "all" // 记录tab选中状态
     };
+  },
+  components: {
+    backtop
   },
   created() {
     this._fetchUserOrder()
@@ -53,7 +69,7 @@ export default {
 
       let promiseGoodsAll = []
       // 先同后异  promise属于异步操作  获取值的时候先获取同步的
-      // 循环里面不要写await  这样属于串行，耗性能
+      // 循环里面不要写await  这样属于串行，耗性能  await是异步获取
       orderData.forEach((item) => {
         promiseGoodsAll.push(fetchCartGoods(item.goods_ids))
       })
@@ -69,19 +85,25 @@ export default {
       this.allOrder = orderData
     },
     // 点击时将映射状态传给 status
-    tabsClick(index, item) {
+    tabsClick(index) {
       let objMap = {
-        '全部': 'all',
-        '未付款': '0',
-        '已付款': '1',
-        '完成': '2',
+        0: 'all',
+        1: '0',
+        2: '1',
+        3: '2',
       }
-      this.status = objMap[item]
+      this.status = objMap[index]
+    },
+    copy() {
+      // 阻止事件冒泡（传播）
+      event.stopPropagation()
+      this.$toast.success('复制成功')
     }
   },
   computed: {
     // 状态status依赖于tab栏字段  所以在计算属性里将响应的订单数据赋值给allOrder
     filterOrderGoods() {
+      // 为all字段则显示全部订单  否则判断每个订单里的状态 显示对应数据
       return this.status == 'all' ? this.allOrder : this.allOrder.filter((item) => item.status == this.status)
     },
   },

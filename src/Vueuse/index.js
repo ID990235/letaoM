@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import myaxios from '../api/request.js'
 import axios from 'axios'
+import VueClipboard from 'vue-clipboard2'
+
+Vue.use(VueClipboard)
 
 Vue.use({
   install(Vue) {

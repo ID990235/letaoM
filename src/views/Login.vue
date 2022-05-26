@@ -6,7 +6,7 @@
       <van-field v-model="password" type="password" name="password" label="密码" placeholder="密码"
         :rules="[{ required: true, message: '请填写密码' }]" />
       <div style="margin: 16px;">
-        <van-button round block type="info" native-type="submit">提交</van-button>
+        <van-button round block type="info" native-type="submit">登录</van-button>
       </div>
     </van-form>
     <router-link tag="div" to="/register" class="text-center text-gray-color">没有账号？去注册</router-link>

@@ -11,3 +11,7 @@ export function upload(formData) {
 export function fetchRegister(formData) {
   return myaxios.post('/register', formData)
 }
+
+export function fetchCarGoods(ids) {
+  return myaxios.get(`/getshopcarlist/${ids}`)
+}

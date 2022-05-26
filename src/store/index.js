@@ -55,9 +55,9 @@ const store = new Vuex.Store({
     updateAvatar(state, newAvatar) {
       state.userInfo.avatar = newAvatar
     },
-    // 提交订单清除订单数据
+    // 提交订单清除选中订单数据
     clearCartData(state) {
-      state.cartData = []
+      state.cartData = state.cartData.filter(item => !item.isCheck)
     }
   },
   getters: {
@@ -102,6 +102,10 @@ const store = new Vuex.Store({
     getGoodsid(state) {
       let ids = state.cartData.map(item => item.id).join(',')
       return ids
+    },
+    // 获取选中的商品id
+    getSelectGoodIds(state) {
+      return state.cartData.filter(item => item.isCheck && item.number)
     }
   },
   plugins: [createPersistedState()]

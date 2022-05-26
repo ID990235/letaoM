@@ -139,7 +139,18 @@ const router = new VueRouter({
       meta: {
         name: "order",
         isShowNavbar: false,
-        title: '订单',
+        title: '我的订单',
+        requireAuth: true,
+      }
+    },
+    {
+      path: "/orderdetail/:order_id",
+      component: () => import('../views/OrderDetail.vue'),
+      meta: {
+        name: "orderdetail",
+        isShowNavbar: false,
+        title: '订单详情',
+        requireAuth: true,
       }
     },
   ]

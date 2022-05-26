@@ -2,12 +2,12 @@
   <div class="shopcar-container">
 
     <!-- 收获地址 -->
-    <div v-if="cartGoodslist.length" class="addressWrap">
+    <div v-if="cartGoodslist.length" class="addressWrap" @click="$router.push('/myaddress')">
       <div v-if="hasAddress" class="address">
         <van-icon name="location-o" />
         <div class="info">
-          <div>{{ address.name + ' / ' + address.tel }} 邮编: {{ address.postalCode }}</div>
-          <div>{{ textAddress }}</div>
+          <p>收货人名：{{ address.name + ' ' + address.tel }} 邮编: {{ address.postalCode }}</p>
+          <p>收获地址：{{ textAddress }}</p>
         </div>
       </div>
       <!-- 无设置收货地址 -->
@@ -69,13 +69,14 @@ export default {
       cartGoodslist: [],
       address: {},
       hasAddress: false, // hasAddress 记录是否有地址
+      harvestAddress: JSON.parse(localStorage.getItem('harvestAddress') || '[]')
     }
   },
   components: {
     backtop
   },
   computed: {
-    ...mapGetters(['getCartNum', 'getIsCheck', 'getAllCheck', 'getTotalPrice', 'getTotalNum', 'getGoodNum', 'getGoodsid']),
+    ...mapGetters(['getCartNum', 'getIsCheck', 'getAllCheck', 'getTotalPrice', 'getTotalNum', 'getGoodNum', 'getGoodsid', 'getSelectGoodIds']),
     ...mapState(['cartData', 'allSelected']),
     textAddress() {
       let { province, city, country, addressDetail } = this.address
@@ -110,6 +111,7 @@ export default {
     },
     // 通过所添加的商品id 获取对应数据渲染购物车
     async _fetchCartGoods() {
+      let ids = this.getGoodsid
       let { message } = await fetchCartGoods(ids)
       this.cartGoodslist = message.reverse()
     },
@@ -126,6 +128,12 @@ export default {
       }
 
       if (user_id) {
+        if (this.harvestAddress != '[]') {
+          this.address = this.harvestAddress;
+          this.hasAddress = true
+          return
+        }
+
         let result = await fetchGetUserAddress(user_id);
         // 判断用户是否有添加收货地址
         if (result.length === 0) {
@@ -158,7 +166,7 @@ export default {
         address_id: this.address.id,
         total_price: this.getTotalPrice,
         number: this.getTotalNum,
-        goods_ids: this.getGoodsid
+        goods_ids: this.getSelectGoodIds
       }
 
       this.$toast.loading({
@@ -206,6 +214,10 @@ export default {
         color: red;
         font-size: 20px;
       }
+    }
+
+    .info {
+      line-height: 20px;
     }
   }
 

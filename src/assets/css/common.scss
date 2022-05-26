@@ -4,10 +4,20 @@ body {
   background-color: #f6f6f6;
 }
 
+html {
+  font-family: Helvetica Neue, Tahoma, Arial, PingFangSC-Regular, Hiragino Sans GB, Microsoft Yahei, sans-serif;
+}
+
 body {
   min-width: 320px;
   max-width: 750px;
   margin: 0 auto;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 em,

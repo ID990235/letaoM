@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-address-list v-model="chosenAddressId" :list="lists" default-tag-text="默认" @add="$router.push('/addAddress')"
-      @edit="onEdit" />
+      @edit="onEdit" @select="selectHandle" />
     <van-empty v-if="lists.length === 0" description="请先完善收获地址" />
   </div>
 
@@ -41,6 +41,12 @@ export default {
       })
 
       this.lists = addressAll;
+    },
+    selectHandle(addressInfo, index) {
+      // 1. 把当前选中的地址存入到本地存储
+      localStorage.setItem('harvestAddress', JSON.stringify(addressInfo))
+      // 2.返回是一页面
+      this.$router.back();
     }
   },
   created() {

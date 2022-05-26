@@ -91,7 +91,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 200px;
+    width: 220px;
     padding: 30px 16px;
     color: #eee;
     font-size: 14px;
