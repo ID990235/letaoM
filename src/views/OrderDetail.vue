@@ -8,15 +8,6 @@
     </div>
 
     <div class="card">
-      <van-steps>
-        <van-step v-for="item in wuliuData" :key="item.time">
-          <!-- <h3>{{ item.location }}</h3> -->
-          <p>{{ item.time }}</p>
-        </van-step>
-      </van-steps>
-    </div>
-
-    <div class="card">
       <van-card v-for="item in goods" :key="item.id" :price="item.sell_price" :title="item.title"
         :thumb="item.thumb_path" />
     </div>
@@ -45,14 +36,25 @@
 
     <!-- 订单一些操作按钮 -->
     <div class="btns">
-      <van-button size="mini" v-if="orderInfo.status === 0" @click="pay" type="danger">立即付款</van-button>
-      <van-button size="mini" v-if="orderInfo.is_out === 0 && orderInfo.status === 1" type="danger">提醒发货
+      <van-button plain hairline size="small" v-if="orderInfo.status === 0" @click="pay" type="danger">立即付款</van-button>
+      <van-button plain hairline size="small" v-if="orderInfo.is_out === 0 && orderInfo.status === 1" type="danger">提醒发货
+      </van-button>
+      <van-button plain hairline size="small" v-if="orderInfo.is_out === 1" type="danger" @click="showWuliu">查看物流
       </van-button>
       <template v-if="orderInfo.status === 2">
-        <van-button size="mini" type="info">已完成</van-button>
-        <van-button size="mini" type="info">去评价</van-button>
+        <van-button plain hairline size="small" type="info">已完成</van-button>
+        <van-button plain hairline size="small" type="info">去评价</van-button>
       </template>
     </div>
+
+    <van-popup v-model="isShow" position="bottom" :style="{ height: '60%' }">
+      <van-steps direction="vertical" active-icon="success" active-color="#38f">
+        <van-step v-for="item in wuliuData" :key="item.time">
+          <h3>{{ item.location }}</h3>
+          <p>{{ item.time }}</p>
+        </van-step>
+      </van-steps>
+    </van-popup>
   </div>
 </template>
 
@@ -66,11 +68,11 @@ export default {
       orderInfo: {},
       wuliuData: [],
       goods: [],
+      isShow: false
     }
   },
   created() {
     this._fetchOrderDetail()
-    this.showWuliu()
   },
   methods: {
     async _fetchOrderDetail() {
@@ -82,18 +84,46 @@ export default {
     // 查看物流
     async showWuliu() {
       // 判断之前是否已经有物流信息 
-      // if (this.wuliuData.length !== 0) {
-      //   // 有物流信息
-      //   this.isShow = true
-      //   return;
-      // }
-      // 获取物流接口
+      if (this.wuliuData.length !== 0 && this.orderInfo.is_out === 1) {
+        // 有物流信息
+        this.isShow = true
+        return;
+      }
+      // 1. 获取物流接口
       let wuliuData = await fetchWuliu()
       this.wuliuData = wuliuData
+      // 2. 显示弹窗
+      this.isShow = true
+
     },
     async _fetchCarGoods() {
       let { message } = await fetchCarGoods(this.orderInfo.goods_ids)
       this.goods = message
+    },
+    pay() {
+      // 付款接口
+      this.$dialog.confirm({
+        title: '付款',
+        message: '确认支付吗',
+      }).then(async () => {
+        // 调用付款接口 , 真实业务中，强烈trycatch去捕获异常
+        try {
+          await fetchPayOrder(this.orderInfo.order_id)
+          // 支付成功提示
+          this.$toast.success({
+            message: '支付成功',
+            icon: "wechat-pay"
+          });
+          // 修改订单、发货、收货状态
+          this.orderInfo.status = 2;
+          this.orderInfo.is_take = 1;
+          this.orderInfo.is_out = 1;
+
+        } catch (err) {
+          // 支付异常
+          console.log("支付异常:", err);
+        }
+      })
     },
   },
   computed: {
@@ -137,13 +167,6 @@ export default {
     }
   }
 
-  .van-steps {
-    p {
-      width: 60px;
-      text-align: center;
-    }
-  }
-
   .btns {
     display: flex;
     justify-content: flex-end;
@@ -152,10 +175,17 @@ export default {
     bottom: 0;
     right: 0;
     width: 100vw;
-    height: 60px;
+    height: 55px;
     padding: 0 10px;
     box-shadow: 0 0 10px #ccc;
     background-color: #fafafa;
+
+    .van-button {
+      margin-right: 5px;
+      border-color: #ccc;
+      color: #333333;
+    }
   }
+
 }
 </style>

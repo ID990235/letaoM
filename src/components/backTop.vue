@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { throttle } from '../utils/tools'
 export default {
   props: {
     scrollTop: {
@@ -29,7 +30,7 @@ export default {
     }
   },
   mounted() {
-    document.addEventListener('scroll', this.scrollHandle)
+    document.addEventListener('scroll', throttle(this.scrollHandle, 600))
   },
   destroyed() {
     document.removeEventListener('scroll', this.scrollHandle)

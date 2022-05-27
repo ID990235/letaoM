@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { fetchGetUserAddress } from "../api/address.js"
+import { fetchGetUserAddress, fetchUpdateAddress } from "../api/address.js"
 export default {
   data() {
     return {
@@ -42,11 +42,14 @@ export default {
 
       this.lists = addressAll;
     },
-    selectHandle(addressInfo, index) {
-      // 1. 把当前选中的地址存入到本地存储
-      localStorage.setItem('harvestAddress', JSON.stringify(addressInfo))
-      // 2.返回是一页面
-      this.$router.back();
+    async selectHandle(addressInfo) {
+      this.lists.map(item => item.isDefault = 0)
+      addressInfo.isDefault = 1
+      let data = { ...addressInfo }
+      const { status, message } = await fetchUpdateAddress(addressInfo.id, data)
+
+      if (status === 0) { this.$toast.success(message) }
+
     }
   },
   created() {

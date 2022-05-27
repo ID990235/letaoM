@@ -17,19 +17,31 @@
     </van-search>
 
     <div class="searchWrap">
-      <div class="card">
+      <div class="card" v-if="historyData.length">
         <div class="header">
           <h3>搜索历史</h3>
-          <!-- <i @click="clearHistory" class="iconfont icon-trash"></i> -->
           <van-icon @click="clearHistory" name="delete-o" />
         </div>
         <div class="footer">
-          <span @click="searchData(item)" v-for="(item, index) in historyData" :key="index">{{ item }}</span>
+          <span @click="hotSearch(item)" v-for="(item, index) in historyData" :key="index">{{
+              item
+          }}</span>
         </div>
-
       </div>
+
       <van-divider />
 
+      <div class="card">
+        <div class="header">
+          <h3>热门搜索</h3>
+          <van-icon @click="eyeOpen = !eyeOpen" :name="eyeStyle" />
+        </div>
+        <div class="footer" v-if="eyeOpen">
+          <span @click="hotSearch(item)" v-for="(item, index) in hotData" :key="index">{{ item
+          }}</span>
+        </div>
+        <div class="text-center" v-else>已隐藏热门搜索</div>
+      </div>
     </div>
   </div>
 </template>
@@ -39,26 +51,33 @@ export default {
   data() {
     return {
       value: '',
-      historyData: JSON.parse(localStorage.getItem('historyData') || '[]'),
+      historyData: JSON.parse(localStorage.getItem('historyData') || '[]'), // 设置localStorage便于进来的时候获取值
+      eyeOpen: true,
+      hotData: ['iphone6', 'mac pro', '小米', 'DVD', '笔记本电脑']
     };
   },
   methods: {
-    _fetchSearchData(value) {
-      if (!this.value) {
-        this.$toast('请输入关键字')
+    _fetchSearchData() {
+      // 判断是否有搜索过的关键词  有则删除原来的  添加到数组最前面
+      if (this.historyData.includes(this.value)) {
+        let index = this.historyData.findIndex(item => item === this.value)
+        this.historyData.splice(index, 1)
+      }
+
+      this.historyData.unshift(this.value)
+
+      let blankIndex = this.historyData.findIndex(item => item.trim() == '')
+      if (blankIndex !== -1) {
+        this.historyData.splice(blankIndex, 1)
         return
       }
 
-      // 判断是否有搜索过的关键词  无则添加进value数组然后赋值给本地存储
-      if (!this.historyData.includes(this.value)) {
-        this.historyData.unshift(this.value)
-        localStorage.setItem('historyData', JSON.stringify(this.historyData))
-      }
+      localStorage.setItem('historyData', JSON.stringify(this.historyData))
 
       this.$router.push("/search-result/" + this.value)
     },
     onSearch() {
-      this._fetchSearchData(this.value)
+      this._fetchSearchData()
     },
     clearHistory() {
       this.$dialog.confirm({
@@ -70,11 +89,35 @@ export default {
     },
     onFocus() {
       document.getElementsByClassName('van-field__control')[0].focus();
+    },
+    hotSearch(value) {
+
+      if (this.historyData.includes(value)) {
+        let index = this.historyData.findIndex(item => item === value)
+        this.historyData.splice(index, 1)
+      }
+
+      this.historyData.unshift(value)
+      localStorage.setItem('historyData', JSON.stringify(this.historyData))
+
+      this.$router.push('/search-result/' + value)
+    },
+    clearBlank() {
+      let index = this.historyData.findIndex(item => item.trim() == '')
+      this.historyData.splice(index, 1)
     }
+  },
+  created() {
+    this.clearBlank()
   },
   mounted() {
     this.onFocus()
-  }
+  },
+  computed: {
+    eyeStyle() {
+      return this.eyeOpen ? "eye-o" : "closed-eye"
+    }
+  },
 };
 </script>
 
@@ -103,6 +146,10 @@ export default {
         justify-content: space-between;
         align-items: center;
         padding: 0 4px;
+
+        h3 {
+          margin: 19px 0;
+        }
       }
 
       .footer {

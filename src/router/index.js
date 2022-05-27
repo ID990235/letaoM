@@ -126,7 +126,7 @@ const router = new VueRouter({
       }
     },
     {
-      path: "/search-result",
+      path: "/search-result/:keyword",
       component: () => import('../views/SearchResult.vue'),
       meta: {
         name: "search-result",

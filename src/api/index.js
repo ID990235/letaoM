@@ -28,6 +28,7 @@ export function fetchCartGoods(ids) {
 // 商品搜索接口
 // search?value=i&sort=buy&page=1&pagesize=10
 export function fetchSearchGoods(options) {
-  let { value, sort, order, page, pagesize } = options;
-  return axios.get(`/search?value=${value}&sort=${sort}&order=${order}&page=${page}&pagesize=${pagesize}`)
+  // let { value, sort, order, page, pagesize } = options;
+  let queryString = Object.keys(options).map(key => `${key}=${encodeURIComponent(options[key])}`).join('&')
+  return myaxios.get(`/search?${queryString}`)
 }

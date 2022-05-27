@@ -69,7 +69,6 @@ export default {
       cartGoodslist: [],
       address: {},
       hasAddress: false, // hasAddress 记录是否有地址
-      harvestAddress: JSON.parse(localStorage.getItem('harvestAddress') || '[]')
     }
   },
   components: {
@@ -118,7 +117,7 @@ export default {
     // 获取用户地址
     async getUserAddress() {
       let user_id = this.$store.state.userInfo.id;
-      if (!user_id && this.cartData.length !== 0) {
+      if (!user_id) {
         this.$dialog.alert({
           message: '请先登录哦'
         }).then(() => {
@@ -127,12 +126,7 @@ export default {
         return
       }
 
-      if (user_id) {
-        if (this.harvestAddress != '[]') {
-          this.address = this.harvestAddress;
-          this.hasAddress = true
-          return
-        }
+      if (user_id && this.cartData.length !== 0) {
 
         let result = await fetchGetUserAddress(user_id);
         // 判断用户是否有添加收货地址
@@ -190,6 +184,11 @@ export default {
     }
   },
   created() {
+    if (!this.getGoodsid) return
+    this._fetchCartGoods()
+    this.getUserAddress()
+  },
+  activated() {
     if (!this.getGoodsid) return
     this._fetchCartGoods()
     this.getUserAddress()

@@ -6,7 +6,8 @@
     <!-- 搜索栏 -->
     <van-sticky>
       <div class="search">
-        <van-search ref="Mysearch" background="#fff0" shape="round" placeholder="男士毛衣" @focus="goSearchPage">
+        <van-search ref="Mysearch" background="#fff0" shape="round" placeholder="男士毛衣"
+          @focus="$router.push('/search')">
           <template #left>
             <div class="logoWrap">
               <img src="../assets/images/logo.png">
@@ -38,6 +39,8 @@
 
     <!-- backTop -->
     <backtop :scrollTop="500"></backtop>
+
+    <router-view></router-view>
   </div>
 </template>
 
@@ -107,10 +110,6 @@ export default {
     // 每个商品路由跳转
     goodsRouter({ id }) {
       this.$router.push(`/goodsDetail/${id}`)
-    },
-    // 跳转到搜索页面
-    goSearchPage() {
-      this.$router.push('/search')
     }
   },
   created() {

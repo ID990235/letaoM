@@ -6,7 +6,7 @@ import {
   Search, Sticky, Swipe, SwipeItem, Grid, GridItem, Divider, Lazyload, Dialog, Form,
   Toast, List, PullRefresh, Icon, GoodsAction, GoodsActionIcon, GoodsActionButton, Sku,
   SwipeCell, Checkbox, Image as VanImage, Cell, CellGroup, ActionSheet, Uploader, AddressList,
-  AddressEdit, Tab, Tabs, Step, Steps
+  AddressEdit, Tab, Tabs, Step, Steps, Popup, DropdownMenu, DropdownItem
 } from 'vant';
 Vue.use(Tabbar)
 Vue.use(TabbarItem)
@@ -48,6 +48,9 @@ Vue.use(Tab);
 Vue.use(Tabs);
 Vue.use(Step);
 Vue.use(Steps);
+Vue.use(Popup);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
 Vue.use(Lazyload, {
   lazyComponent: true,
 });

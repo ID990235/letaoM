@@ -6,7 +6,9 @@
     </van-sticky>
 
     <!--匹配一切二级路由  -->
-    <router-view></router-view>
+    <!-- <keep-alive> -->
+      <router-view></router-view>
+    <!-- </keep-alive> -->
   </div>
 </template>
 
