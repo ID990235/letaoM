@@ -23,9 +23,13 @@
     </van-dropdown-menu>
     <van-empty v-if="goodsList.length === 0" description="暂无搜索结果" />
 
-    <div class="goodslist">
-      <Goods v-for="item in goodsList" :key="item.id" :data="item" @goodsclick="goodsclick"></Goods>
-    </div>
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <div class="goodslist">
+          <Goods v-for="item in goodsList" :key="item.id" :data="item" @goodsclick="goodsclick"></Goods>
+        </div>
+      </van-list>
+    </van-pull-refresh>
 
     <backTop></backTop>
 
@@ -37,6 +41,7 @@ import { fetchSearchGoods } from '../api/index'
 import Goods from '../components/goods.vue'
 import backTop from '../components/backTop.vue'
 export default {
+  name: "SearchResult",
   data() {
     return {
       keyword: this.$route.params.keyword,
@@ -47,9 +52,12 @@ export default {
         { text: '好评', value: 'likes' },
         { text: '价格', value: 'sell_price' },
       ],
-      page: 1,
+      page: 0,
       pagesize: 6,
-      goodsList: []
+      goodsList: [],
+      loading: false,
+      finished: false,
+      refreshing: false,
     }
   },
   components: {
@@ -68,29 +76,67 @@ export default {
       this.goodsList = result
     },
     onSearch() {
+      // 获取搜索页的搜索历史，再把当前搜索反应页搜索的词汇加入到搜索历史的数组中
       const historyData = JSON.parse(localStorage.getItem('historyData'))
       if (!historyData.includes(this.keyword)) {
         historyData.unshift(this.keyword)
         localStorage.setItem('historyData', JSON.stringify(historyData))
       }
-      
-      if (!this.keyword.trim() == '') {
+
+      if (!this.keyword.trim() === '') {
         this.$router.replace("/search-result/" + this.keyword)
       }
 
-      this._fetchSearchGoods()
+      this.goodsList = []
+      this.onRefresh()
     },
     optionsChange(value) {
       this.sort = value
-      this._fetchSearchGoods()
+      this.onSearch()
     },
     goodsclick(data) {
       const id = data.id
       this.$router.push(`/goodsdetail/${id}`)
-    }
+    },
+    async onLoad() {
+      this.page++
+
+      if (this.refreshing) {
+        this.goodsList = [];
+        this.refreshing = false;
+      }
+
+      let data = {
+        value: this.keyword,
+        sort: this.sort,
+        order: this.order,
+        page: this.page,
+        pagesize: this.pagesize
+      }
+      const result = await fetchSearchGoods(data)
+      this.goodsList = [...this.goodsList, ...result];
+
+      // 加载完毕
+      this.loading = false;
+
+      // 数据加载完毕  往上拉不会再发送请求
+      result.length === 0
+        ? (this.finished = true)
+        : this.finished = false;
+    },
+    onRefresh() {
+      this.page = 0
+      // 清空列表数据
+      this.finished = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      this.loading = true;
+      this.onLoad();
+    },
   },
   created() {
-    this._fetchSearchGoods()
+    // this._fetchSearchGoods()
   }
 }
 </script>

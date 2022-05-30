@@ -48,6 +48,7 @@
 
 <script>
 export default {
+  name: "search",
   data() {
     return {
       value: '',
@@ -103,8 +104,8 @@ export default {
       this.$router.push('/search-result/' + value)
     },
     clearBlank() {
-      let index = this.historyData.findIndex(item => item.trim() == '')
-      this.historyData.splice(index, 1)
+      let index = this.historyData.findIndex(item => item.trim() === '')
+      if(index !== -1) this.historyData.splice(index, 1)
     }
   },
   created() {

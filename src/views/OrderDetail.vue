@@ -9,7 +9,7 @@
 
     <div class="card">
       <van-card v-for="item in goods" :key="item.id" :price="item.sell_price" :title="item.title"
-        :thumb="item.thumb_path" />
+        :thumb="item.thumb_path" @click="goodsDetail(item.id)" />
     </div>
 
     <div class="card">
@@ -62,6 +62,7 @@
 import { fetchOrderDetail, fetchPayOrder, fetchWuliu } from "../api/order.js"
 import { fetchCarGoods } from "../api/user.js"
 export default {
+  name: "orderdetail",
   data() {
     return {
       order_id: this.$route.params.order_id,
@@ -125,6 +126,9 @@ export default {
         }
       })
     },
+    goodsDetail(id) {
+      this.$router.push(`/goodsDetail/${id}`)
+    }
   },
   computed: {
     // 订单状态提示

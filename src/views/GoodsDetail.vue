@@ -47,7 +47,7 @@
 
     <!-- sku组件 -->
     <van-sku v-model="show" :sku="sku" :goods="goods" :goods-id="goodsInfo.id" :hide-stock="sku.hide_stock"
-      :show-add-cart-btn="showAddCarBtn" @add-cart="addCart">
+      :show-add-cart-btn="showAddCarBtn" @add-cart="addCart" @buy-clicked="buyClicked">
       <template #sku-messages>
         <div class="card">
           <van-divider>商品规格</van-divider>
@@ -138,6 +138,14 @@ export default {
       this.addGoodsToCar(cartData)
       this.show = false
       this.$toast.success('添加购物车');
+    },
+    buyClicked(skuData) {
+      let { goodsId, selectedNum } = skuData;
+      let { sell_price: price, title, zhaiyao: content } = this.goodsInfo
+      const cartData = { price, id: goodsId, number: selectedNum, isCheck: true }
+      this.addGoodsToCar(cartData)
+      this.show = false
+      this.$router.push('/home/shopcar')
     }
   },
   computed: {

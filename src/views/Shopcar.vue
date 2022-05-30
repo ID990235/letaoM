@@ -62,7 +62,7 @@ import { mapGetters, mapState, mapMutations } from 'vuex'
 import backtop from '../components/backTop.vue'
 import { genOrderId } from '../utils/tools'
 export default {
-  name: 'Shopcar',
+  name: 'shopcar',
   data() {
     return {
       carImg,
@@ -184,11 +184,6 @@ export default {
     }
   },
   created() {
-    if (!this.getGoodsid) return
-    this._fetchCartGoods()
-    this.getUserAddress()
-  },
-  activated() {
     if (!this.getGoodsid) return
     this._fetchCartGoods()
     this.getUserAddress()

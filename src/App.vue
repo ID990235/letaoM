@@ -6,9 +6,9 @@
     </van-sticky>
 
     <!--匹配一切二级路由  -->
-    <!-- <keep-alive> -->
+    <keep-alive exclude="orderdetail,search,SearchResult">
       <router-view></router-view>
-    <!-- </keep-alive> -->
+    </keep-alive>
   </div>
 </template>
 
@@ -18,22 +18,34 @@ export default {
     return {
       isShowNavbar: false,
       title: '',
+      isOnLine: window.navigator.online,
     }
   },
   watch: {
     '$route': {
-      handler(newVal) {
+      handler(newVal, oldVal) {
         let { isShowNavbar, title } = newVal.meta
         this.isShowNavbar = !isShowNavbar
         this.title = title
       },
       // immediate: true
+    },
+    isOnLine(newVal) {
+      newVal === true ? this.$toast.success('网络正常！') : this.$toast.fail('网络中断！')
     }
   },
   methods: {
     goBack() {
-      this.title == '购物车' ? this.$router.push('/home/index') : this.$router.back()
+      this.title == '购物车' ? this.$router.push('/home/index') : this.$router.back();
+    },
+    updateNetworkStatu(e) {
+      let { type } = e
+      this.isOnLine = type === 'online' ? true : false
     }
+  },
+  mounted() {
+    window.addEventListener('online', this.updateNetworkStatu)
+    window.addEventListener('offline', this.updateNetworkStatu)
   }
 }
 </script>

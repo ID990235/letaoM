@@ -10,10 +10,11 @@
 <script>
 import { fetchGetUserAddress, fetchUpdateAddress } from "../api/address.js"
 export default {
+  name: "myaddress",
   data() {
     return {
       chosenAddressId: '1',
-      lists: []
+      lists: [],
     };
   },
   methods: {
@@ -48,8 +49,10 @@ export default {
       let data = { ...addressInfo }
       const { status, message } = await fetchUpdateAddress(addressInfo.id, data)
 
-      if (status === 0) { this.$toast.success(message) }
-
+      if (status === 0) {
+        this.$toast.success(message)
+        this._fetchUserAddress()
+      }
     }
   },
   created() {

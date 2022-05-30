@@ -3,7 +3,7 @@
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <div class="goodslist">
-          <Goods v-for="item in lists" :key="item.id" :data="item" @goodsclick="goodsRouter">
+          <Goods v-for="item in lists" :key="item.id" :data="item" @goodsclick="goodsDetail">
             <template #footer>
               <div class="footer">
                 <div class="price_wrap">
@@ -64,6 +64,7 @@ export default {
         ? (this.lists.length % 2 === 1 && this.lists.pop(), this.finished = true)
         : this.finished = false;
     },
+    // 下拉刷新
     onRefresh() {
       this.page = 0;
       // 清空列表数据
@@ -74,7 +75,7 @@ export default {
       this.loading = true;
       this.onLoad();
     },
-    goodsRouter({ id }) {
+    goodsDetail({ id }) {
       this.$router.push(`/goodsDetail/${id}`)
     }
   },

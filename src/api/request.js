@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { Toast } from 'vant'
-import VueRouter from 'vue-router';
 import store from '../store/index'
 import router from '../router'
 
@@ -10,6 +9,9 @@ const instance = axios.create({
 
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
+  // 告诉服务器，不需要缓存
+  // If-Modified-Since 是标准的HTTP请求头标签，在发送HTTP请求时，
+  // 把浏览器端缓存页面的最后修改时间一起发到服务器去，服务器会把这个时间与服务器上实际文件的最后修改时间进行比较
   config.headers['If-Modified-Since'] = 0;
   // 设置token请求头给服务器
   if (store.state.token) {

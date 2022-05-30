@@ -9,7 +9,7 @@
         <van-button round block type="info" native-type="submit">登录</van-button>
       </div>
     </van-form>
-    <router-link tag="div" to="/register" class="text-center text-gray-color">没有账号？去注册</router-link>
+    <router-link tag="div" to="/register" class="text-center text-gray-color go_register">没有账号？去注册</router-link>
   </div>
 </template>
 
@@ -42,5 +42,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.go_register {
+  width: 130px;
+  margin: 0 auto;
+}
 </style>
