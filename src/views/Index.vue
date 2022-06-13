@@ -7,7 +7,7 @@
       <van-tabbar-item icon="manager-o" to="/home/user">我的</van-tabbar-item>
     </van-tabbar>
 
-    <!--匹配三个子路由  子路由需要在父路由下使用  -->
+    <!--匹配三个子路由  子路由需要在父路由页面下使用  -->
     <keep-alive exclude="shopcar">
       <router-view></router-view>
     </keep-alive>

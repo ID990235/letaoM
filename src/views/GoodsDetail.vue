@@ -113,6 +113,7 @@ export default {
       this.goods.picture = message.length && message[0].src
     },
     async _fetchGoodsInfo() {
+      console.log(this.id);
       let { message } = await fetchGoodsInfo(this.id)
       this.goodsInfo = message;
       this.sku.price = message.sell_price;
@@ -153,8 +154,22 @@ export default {
     ...mapGetters(['getCartNum'])
   },
   created() {
+    console.log('created');
     this._fetchGoodsImages()
     this._fetchGoodsInfo()
+  },
+  activated() {
+    console.log('activated');
+    this._fetchGoodsImages()
+    this._fetchGoodsInfo()
+  },
+  watch: {
+    $route: {
+      handler(newVal) {
+        this.id = newVal.params.id
+      },
+      immediate: true
+    }
   }
 }
 </script>

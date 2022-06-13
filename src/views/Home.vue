@@ -6,8 +6,7 @@
     <!-- 搜索栏 -->
     <van-sticky>
       <div class="search">
-        <van-search ref="Mysearch" background="#fff0" shape="round" placeholder="男士毛衣"
-          @focus="$router.push('/search')">
+        <van-search ref="Mysearch" background="#fff0" shape="round" placeholder="男士毛衣" @focus="$router.push('/search')">
           <template #left>
             <div class="logoWrap">
               <img src="../assets/images/logo.png">
@@ -63,6 +62,7 @@ import Goods from '../components/goods.vue'
 // 导入backTop组件
 import backtop from '../components/backTop.vue'
 export default {
+  name: 'home',
   data() {
     return {
       lunBoData: [],

@@ -32,6 +32,7 @@
 import { mapMutations } from 'vuex'
 import { upload } from "../api/user.js"
 export default {
+  name: 'user',
   data() {
     return {
       show: false,
