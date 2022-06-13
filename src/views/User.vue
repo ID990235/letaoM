@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     avatar() {
-      return 'http://api.w0824.com/' + this.$store.state.userInfo.avatar;
+      return 'http://127.0.0.1:5000/' + this.$store.state.userInfo.avatar;
     }
   },
   methods: {

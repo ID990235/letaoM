@@ -4,7 +4,7 @@ import store from '../store/index'
 import router from '../router'
 
 const instance = axios.create({
-  baseURL: 'http://api.w0824.com/api'
+  baseURL: 'http://120.76.178.122:5000/api'
 })
 
 // 添加请求拦截器

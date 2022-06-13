@@ -105,7 +105,8 @@ const store = new Vuex.Store({
     },
     // 获取选中的商品id
     getSelectGoodIds(state) {
-      return state.cartData.filter(item => item.isCheck && item.number)
+      let ids = state.cartData.filter(item => item.isCheck && item.number).map(item => item.id).join(',')
+      return ids
     }
   },
   plugins: [createPersistedState()]

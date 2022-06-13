@@ -154,6 +154,7 @@ export default {
     async orderCommit() {
       // 准备提交订单数据
       const user_id = this.$store.state.userInfo.id;
+      console.log(this.getSelectGoodIds);
       const orderData = {
         user_id,
         order_id: genOrderId(),
